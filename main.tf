@@ -11,10 +11,10 @@ resource "aws_dms_endpoint" "source_endpoint" {
   engine_name   = "${var.source_engine_name}" # (Required) The type of engine for the endpoint. Can be one of mysql | oracle | postgres | mariadb | aurora | redshift | sybase | sqlserver.
 
   server_name   = "${var.source_server_name}"   # (Required) The host name of the server.
-  database_name = "${var.source_database_name}" # (Optional) The name of the endpoint database.
   port          = "${var.source_port}"          # (Required) The port used by the endpoint database.
   username      = "${var.source_username}"      # (Required) The user name to be used to login to the endpoint database.
   password      = "${var.source_password}"      # (Required) The password to be used to login to the endpoint database.
+  database_name = "${var.source_database_name}" # (Optional) The name of the endpoint database.
 
   extra_connection_attributes = "${var.source_extra_connection_attributes}" # extra_connection_attributes - (Optional) Additional attributes associated with the connection. For available attributes see Using Extra Connection Attributes with AWS Database Migration Service (http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ConnectionAttributes.html)
 
@@ -66,10 +66,10 @@ resource "aws_dms_replication_subnet_group" "subnet" {
 // Create a Data Migration Service replication instance
 resource "aws_dms_replication_instance" "repinstance" {
   replication_instance_class = "${var.replication_instance_class}" # (Required) The compute and memory capacity of the replication instance as specified by the replication instance class. Can be one of dms.t2.micro | dms.t2.small | dms.t2.medium | dms.t2.large | dms.c4.large | dms.c4.xlarge | dms.c4.2xlarge | dms.c4.4xlarge
-  replication_instance_id    = "${var.replication_instance_id}"    #  (Required) The replication instance identifier. This parameter is stored as a lowercase string.
+  replication_instance_id    = "${var.replication_instance_id}"    # (Required) The replication instance identifier. This parameter is stored as a lowercase string.
 
   allocated_storage            = "${var.replication_instance_allocated_storage}"            # (Optional, Default: 50, Min: 5, Max: 6144) The amount of storage (in gigabytes) to be initially allocated for the replication instance.
-  apply_immediately            = "${var.replication_instance_apply_immediately}"            #  (Optional, Default: false) Indicates whether the changes should be applied immediately or during the next maintenance window. Only used when updating an existing resource.
+  apply_immediately            = "${var.replication_instance_apply_immediately}"            # (Optional, Default: false) Indicates whether the changes should be applied immediately or during the next maintenance window. Only used when updating an existing resource.
   auto_minor_version_upgrade   = "${var.replication_instance_auto_minor_version_upgrade}"   # (Optional, Default: false) Indicates that minor engine upgrades will be applied automatically to the replication instance during the maintenance window.
   availability_zone            = "${var.replication_instance_availability_zone}"            # (Optional) The EC2 Availability Zone that the replication instance will be created in.
   engine_version               = "${var.replication_instance_engine_version}"               # (Optional) The engine version number of the replication instance.
@@ -90,6 +90,27 @@ resource "aws_dms_replication_instance" "repinstance" {
   vpc_security_group_ids = [
     "sg-12345678",
   ]
+}
+
+// Create a replication task to perform the migration
+resource "aws_dms_replication_task" "reptask" {
+  replication_instance_arn  = "${aws_dms_replication_instance.test-dms-replication-instance-tf.replication_instance_arn}" # (Required) The Amazon Resource Name (ARN) of the replication instance.
+  replication_task_id       = "${var.replication_task_id}" # (Required) The replication task identifier.
+
+  migration_type            = "${var.replication_task_migration_type}" # (Required) The migration type. Can be one of full-load | cdc | full-load-and-cdc.
+  table_mappings            = "${var.replication_task_table_mappings}" # (Required) An escaped JSON string that contains the table mappings. For information on table mapping see Using Table Mapping with an AWS Database Migration Service Task to Select and Filter Data (http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.html)
+  source_endpoint_arn       = "${aws_dms_endpoint.test-dms-source-endpoint-tf.endpoint_arn}" # (Required) The Amazon Resource Name (ARN) string that uniquely identifies the source endpoint.
+  target_endpoint_arn = "${aws_dms_endpoint.test-dms-target-endpoint-tf.endpoint_arn}" # (Required) The Amazon Resource Name (ARN) string that uniquely identifies the target endpoint.
+
+  cdc_start_time            = "${var.replication_task_cdc_start_time}" # (Optional) The Unix timestamp integer for the start of the Change Data Capture (CDC) operation.
+  replication_task_settings = "${var.replication_task_settings}" # (Optional) An escaped JSON string that contains the task settings. For a complete list of task settings, see Task Settings for AWS Database Migration Service Tasks (http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TaskSettings.html).
+
+  tags {
+    Name        = "${var.replication_task_name}"
+    Environment = "${var.envname}"
+    Service     = "${var.service}"
+    Envtype     = "${var.envtype}"
+  }
 }
 
 // S3 Bucket For Logs

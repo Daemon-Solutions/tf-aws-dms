@@ -62,3 +62,5 @@ variable "replication_instance_multi_az" {}
 variable "replication_instance_preferred_maintenance_window" {}
 variable "replication_instance_publicly_accessible" {}
 variable "replication_instance_name" {}
+
+// Replication task variables
