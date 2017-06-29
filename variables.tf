@@ -4,6 +4,10 @@ variable "envname" {}
 variable "envtype" {}
 variable "service" {}
 
+variable "enabled" {
+  default = "1"
+}
+
 // DNS Variables
 variable "target_endpoint_dns" {
   default = "0"
@@ -64,3 +68,4 @@ variable "replication_instance_publicly_accessible" {}
 variable "replication_instance_name" {}
 
 // Replication task variables
+
