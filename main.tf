@@ -6,10 +6,10 @@ terraform {
 // http://docs.aws.amazon.com/dms/latest/userguide/CHAP_GettingStarted.html
 // Create the source Data Migration Service Endpoint (source database)
 resource "aws_dms_endpoint" "source_endpoint" {
-  count         = "${var.enabled}"
-  endpoint_id   = "${var.source_endpoint_id}" # (Required) The database endpoint identifier.
-  endpoint_type = "source"                    # (Required) The type of endpoint. Can be one of source | target.
-  engine_name   = "${var.source_engine_name}" # (Required) The type of engine for the endpoint. Can be one of mysql | oracle | postgres | mariadb | aurora | redshift | sybase | sqlserver.
+  count         = "${var.enabled == "true" ? 1 : 0 }"
+  endpoint_id   = "${var.source_endpoint_id}"         # (Required) The database endpoint identifier.
+  endpoint_type = "source"                            # (Required) The type of endpoint. Can be one of source | target.
+  engine_name   = "${var.source_engine_name}"         # (Required) The type of engine for the endpoint. Can be one of mysql | oracle | postgres | mariadb | aurora | redshift | sybase | sqlserver.
 
   server_name   = "${var.source_server_name}"   # (Required) The host name of the server.
   port          = "${var.source_port}"          # (Required) The port used by the endpoint database.
@@ -34,14 +34,14 @@ resource "aws_dms_endpoint" "source_endpoint" {
 
 // Create the target Data Migration Service Endpoint (target database)
 resource "aws_dms_endpoint" "target_endpoint" {
-  count         = "${var.enabled}"
-  endpoint_id   = "${var.target_endpoint_id}" #  (Required) The database endpoint identifier.
-  endpoint_type = "target"                    # (Required) The type of endpoint. Can be one of target | target.
-  engine_name   = "${var.target_engine_name}" # (Required) The type of engine for the endpoint. Can be one of mysql | oracle | postgres | mariadb | aurora | redshift | sybase | sqlserver.
-  password      = "${var.target_password}"    # (Required) The password to be used to login to the endpoint database.
-  port          = "${var.target_port}"        # (Required) The port used by the endpoint database.
-  server_name   = "${var.target_server_name}" # (Required) The host name of the server.
-  username      = "${var.target_username}"    # (Required) The user name to be used to login to the endpoint database.
+  count         = "${var.enabled == "true" ? 1 : 0 }"
+  endpoint_id   = "${var.target_endpoint_id}"         #  (Required) The database endpoint identifier.
+  endpoint_type = "target"                            # (Required) The type of endpoint. Can be one of target | target.
+  engine_name   = "${var.target_engine_name}"         # (Required) The type of engine for the endpoint. Can be one of mysql | oracle | postgres | mariadb | aurora | redshift | sybase | sqlserver.
+  password      = "${var.target_password}"            # (Required) The password to be used to login to the endpoint database.
+  port          = "${var.target_port}"                # (Required) The port used by the endpoint database.
+  server_name   = "${var.target_server_name}"         # (Required) The host name of the server.
+  username      = "${var.target_username}"            # (Required) The user name to be used to login to the endpoint database.
 
   certificate_arn             = "${var.target_certificate_arn}"             # (Optional, Default: empty string) The Amazon Retarget Name (ARN) for the certificate.
   database_name               = "${var.target_database_name}"               # (Optional) The name of the endpoint database.
@@ -59,7 +59,7 @@ resource "aws_dms_endpoint" "target_endpoint" {
 
 // Create a Data Migration Service Subnet
 resource "aws_dms_replication_subnet_group" "subnet" {
-  count                                = "${var.enabled}"
+  count                                = "${var.enabled == "true" ? 1 : 0 }"
   replication_subnet_group_description = "${var.replication_subnet_group_description}" # (Required) The description for the subnet group.
   replication_subnet_group_id          = "${var.replication_subnet_group_id}"          # (Required) The name for the replication subnet group. This value is stored as a lowercase string.
 
@@ -68,7 +68,7 @@ resource "aws_dms_replication_subnet_group" "subnet" {
 
 // Create a Data Migration Service replication instance
 resource "aws_dms_replication_instance" "repinstance" {
-  count                      = "${var.enabled}"
+  count                      = "${var.enabled == "true" ? 1 : 0 }"
   replication_instance_class = "${var.replication_instance_class}" # (Required) The compute and memory capacity of the replication instance as specified by the replication instance class. Can be one of dms.t2.micro | dms.t2.small | dms.t2.medium | dms.t2.large | dms.c4.large | dms.c4.xlarge | dms.c4.2xlarge | dms.c4.4xlarge
   replication_instance_id    = "${var.replication_instance_id}"    # (Required) The replication instance identifier. This parameter is stored as a lowercase string.
 
@@ -98,7 +98,7 @@ resource "aws_dms_replication_instance" "repinstance" {
 
 // Create a replication task to perform the migration
 resource "aws_dms_replication_task" "reptask" {
-  count                    = "${var.enabled}"
+  count                    = "${var.enabled == "true" ? 1 : 0 }"
   replication_instance_arn = "${aws_dms_replication_instance.test-dms-replication-instance-tf.replication_instance_arn}" # (Required) The Amazon Resource Name (ARN) of the replication instance.
   replication_task_id      = "${var.replication_task_id}"                                                                # (Required) The replication task identifier.
 

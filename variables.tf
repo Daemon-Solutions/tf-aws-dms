@@ -5,7 +5,7 @@ variable "envtype" {}
 variable "service" {}
 
 variable "enabled" {
-  default = "1"
+  default = true
 }
 
 // DNS Variables
