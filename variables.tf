@@ -22,6 +22,7 @@ variable "enabled" {
 // Source Endpoint Variables
 variable "source_endpoint_id" {}
 variable "source_endpoint_name" {}
+variable "source_engine_name" {}
 variable "source_server_name" {}
 variable "source_port" {}
 variable "source_username" {}
@@ -100,7 +101,7 @@ variable "replication_instance_multi_az" {
   default = ""
 }
 variable "replication_instance_preferred_maintenance_window" {
-  default = ""
+  default = "sun:03:45-sun:05:45"
 }
 variable "replication_instance_publicly_accessible" {
   default = ""
