@@ -6,6 +6,10 @@ Data migration service module.
 # Description
 Creates a DMS source and target endpoints, a DMS replication instance and a DMS replication subnet.
 
+## Notes
+
+* Port is set to default to 3306 on both source and target.
+
 # Usage
 
 ```

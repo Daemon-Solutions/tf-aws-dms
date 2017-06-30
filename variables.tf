@@ -24,7 +24,9 @@ variable "source_endpoint_id" {}
 variable "source_endpoint_name" {}
 variable "source_engine_name" {}
 variable "source_server_name" {}
-variable "source_port" {}
+variable "source_port" {
+  default = "3306"
+}
 variable "source_username" {}
 variable "source_password" {}
 variable "source_database_name" {
@@ -47,7 +49,9 @@ variable "source_ssl_mode" {
 variable "target_endpoint_id" {}
 variable "target_engine_name" {}
 variable "target_password" {}
-variable "target_port" {}
+variable "target_port" {
+  default = "3306"
+}
 variable "target_server_name" {}
 variable "target_username" {}
 variable "target_endpoint_name" {}
