@@ -17,7 +17,7 @@ resource "aws_dms_endpoint" "source_endpoint" {
   password      = "${var.source_password}"      # (Required) The password to be used to login to the endpoint database.
   database_name = "${var.source_database_name}" # (Optional) The name of the endpoint database.
 
-  extra_connection_attributes = "${var.source_extra_connection_attributes}" # extra_connection_attributes - (Optional) Additional attributes associated with the connection. For available attributes see Using Extra Connection Attributes with AWS Database Migration Service (http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ConnectionAttributes.html)
+  extra_connection_attributes = "${var.source_extra_connection_attributes}" # (Optional) Additional attributes associated with the connection. For available attributes see Using Extra Connection Attributes with AWS Database Migration Service (http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ConnectionAttributes.html)
 
   // security stuff
   kms_key_arn     = "${var.source_kms_key_arn}"     # (Optional) The Amazon Resource Name (ARN) for the KMS key that will be used to encrypt the connection parameters. If you do not specify a value for kms_key_arn, then AWS DMS will use your default encryption key. AWS KMS creates the default encryption key for your AWS account. Your AWS account has a different default encryption key for each AWS region.
@@ -35,7 +35,7 @@ resource "aws_dms_endpoint" "source_endpoint" {
 // Create the target Data Migration Service Endpoint (target database)
 resource "aws_dms_endpoint" "target_endpoint" {
   count         = "${var.enabled == "true" ? 1 : 0 }"
-  endpoint_id   = "${var.target_endpoint_id}"         #  (Required) The database endpoint identifier.
+  endpoint_id   = "${var.target_endpoint_id}"         # (Required) The database endpoint identifier.
   endpoint_type = "target"                            # (Required) The type of endpoint. Can be one of target | target.
   engine_name   = "${var.target_engine_name}"         # (Required) The type of engine for the endpoint. Can be one of mysql | oracle | postgres | mariadb | aurora | redshift | sybase | sqlserver.
   password      = "${var.target_password}"            # (Required) The password to be used to login to the endpoint database.
@@ -45,7 +45,7 @@ resource "aws_dms_endpoint" "target_endpoint" {
 
   certificate_arn             = "${var.target_certificate_arn}"             # (Optional, Default: empty string) The Amazon Retarget Name (ARN) for the certificate.
   database_name               = "${var.target_database_name}"               # (Optional) The name of the endpoint database.
-  extra_connection_attributes = "${var.target_extra_connection_attributes}" # extra_connection_attributes - (Optional) Additional attributes associated with the connection. For available attributes see Using Extra Connection Attributes with AWS Database Migration Service (http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ConnectionAttributes.html)
+  extra_connection_attributes = "${var.target_extra_connection_attributes}" # (Optional) Additional attributes associated with the connection. For available attributes see Using Extra Connection Attributes with AWS Database Migration Service (http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ConnectionAttributes.html)
   kms_key_arn                 = "${var.target_kms_key_arn}"                 # (Optional) The Amazon Retarget Name (ARN) for the KMS key that will be used to encrypt the connection parameters. If you do not specify a value for kms_key_arn, then AWS DMS will use your default encryption key. AWS KMS creates the default encryption key for your AWS account. Your AWS account has a different default encryption key for each AWS region.
   ssl_mode                    = "${var.target_ssl_mode}"                    # (Optional, Default: none) The SSL mode to use for the connection. Can be one of none | require | verify-ca | verify-full
 
@@ -63,7 +63,7 @@ resource "aws_dms_replication_subnet_group" "subnet" {
   replication_subnet_group_description = "${var.replication_subnet_group_description}" # (Required) The description for the subnet group.
   replication_subnet_group_id          = "${var.replication_subnet_group_id}"          # (Required) The name for the replication subnet group. This value is stored as a lowercase string.
 
-  subnet_ids = ["${var.subnet_ids}"] # (Required) A list of the EC2 subnet IDs for the subnet group.
+  subnet_ids = ["${var.replication_subnet_subnet_ids}"] # (Required) A list of the EC2 subnet IDs for the subnet group.
 }
 
 // Create a Data Migration Service replication instance
@@ -82,7 +82,7 @@ resource "aws_dms_replication_instance" "repinstance" {
   preferred_maintenance_window = "${var.replication_instance_preferred_maintenance_window}" # (Optional) The weekly time range during which system maintenance can occur, in Universal Coordinated Time (UTC).
   publicly_accessible          = "${var.replication_instance_publicly_accessible}"          # (Optional, Default: false) Specifies the accessibility options for the replication instance. A value of true represents an instance with a public IP address. A value of false represents an instance with a private IP address.
   replication_instance_name    = "${var.replication_instance_name}"                         # (Optional) A list of VPC security group IDs to be used with the replication instance. The VPC security groups must work with the VPC containing the replication instance.
-  replication_subnet_group_id  = "${aws_dms_replication_subnet_group.subnet}"               # (Optional) A subnet group to associate with the replication instance.
+  replication_subnet_group_id  = "${aws_dms_replication_subnet_group.subnet.id}"               # (Optional) A subnet group to associate with the replication instance.
 
   tags {
     Name        = "${var.replication_instance_name}"
