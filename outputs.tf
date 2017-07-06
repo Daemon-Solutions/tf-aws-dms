@@ -1,6 +1,6 @@
 // replication instance outputs
 output "replication_instance_arn" {
-  value = "${aws_dms_replication_instance.replication_instance_arn}"
+  value = "${aws_dms_replication_instance.repinstance.replication_instance_arn}"
 }
 
 output "replication_instance_private_ips" {
