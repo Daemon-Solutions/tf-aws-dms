@@ -50,7 +50,7 @@ variable "source_kms_key_arn" {
 }
 
 variable "source_ssl_mode" {
-  default = ""
+  default = "none"
 }
 
 // Target Endpoint Variables
