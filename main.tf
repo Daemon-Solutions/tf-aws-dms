@@ -71,7 +71,7 @@ resource "aws_dms_replication_instance" "repinstance" {
   count                      = "${var.enabled == "true" ? 1 : 0 }"
   replication_instance_class = "${var.replication_instance_class}"                                                         # (Required) The compute and memory capacity of the replication instance as specified by the replication instance class. Can be one of dms.t2.micro | dms.t2.small | dms.t2.medium | dms.t2.large | dms.c4.large | dms.c4.xlarge | dms.c4.2xlarge | dms.c4.4xlarge
   replication_instance_id    = "${var.replication_instance_id}"                                                            # (Required) The replication instance identifier. This parameter is stored as a lowercase string.
-  replication_instance_arn   = "${aws_dms_replication_instance.test-dms-replication-instance-tf.replication_instance_arn}" # (Required) The Amazon Resource Name (ARN) of the replication instance.
+  replication_instance_arn   = "${aws_dms_replication_instance.repinstance.replication_instance_arn}" # (Required) The Amazon Resource Name (ARN) of the replication instance.
 
   allocated_storage                = "${var.replication_instance_allocated_storage}"            # (Optional, Default: 50, Min: 5, Max: 6144) The amount of storage (in gigabytes) to be initially allocated for the replication instance.
   apply_immediately                = "${var.replication_instance_apply_immediately}"            # (Optional, Default: false) Indicates whether the changes should be applied immediately or during the next maintenance window. Only used when updating an existing resource.
@@ -102,13 +102,13 @@ resource "aws_dms_replication_instance" "repinstance" {
 // Create a replication task to perform the migration
 resource "aws_dms_replication_task" "reptask" {
   count                    = "${var.enabled == "true" ? 1 : 0 }"
-  replication_instance_arn = "${aws_dms_replication_instance.test-dms-replication-instance-tf.replication_instance_arn}" # (Required) The Amazon Resource Name (ARN) of the replication instance.
+  replication_instance_arn = "${aws_dms_replication_instance.repinstance.replication_instance_arn}" # (Required) The Amazon Resource Name (ARN) of the replication instance.
   replication_task_id      = "${var.replication_task_id}"                                                                # (Required) The replication task identifier.
 
   migration_type      = "${var.replication_task_migration_type}"                       # (Required) The migration type. Can be one of full-load | cdc | full-load-and-cdc.
   table_mappings      = "${var.replication_task_table_mappings}"                       # (Required) An escaped JSON string that contains the table mappings. For information on table mapping see Using Table Mapping with an AWS Database Migration Service Task to Select and Filter Data (http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.html)
-  source_endpoint_arn = "${aws_dms_endpoint.test-dms-source-endpoint-tf.endpoint_arn}" # (Required) The Amazon Resource Name (ARN) string that uniquely identifies the source endpoint.
-  target_endpoint_arn = "${aws_dms_endpoint.test-dms-target-endpoint-tf.endpoint_arn}" # (Required) The Amazon Resource Name (ARN) string that uniquely identifies the target endpoint.
+  source_endpoint_arn = "${aws_dms_endpoint.source_endpoint.endpoint_arn}" # (Required) The Amazon Resource Name (ARN) string that uniquely identifies the source endpoint.
+  target_endpoint_arn = "${aws_dms_endpoint.target_endpoint.endpoint_arn}" # (Required) The Amazon Resource Name (ARN) string that uniquely identifies the target endpoint.
 
   cdc_start_time            = "${var.replication_task_cdc_start_time}" # (Optional) The Unix timestamp integer for the start of the Change Data Capture (CDC) operation.
   replication_task_settings = "${var.replication_task_settings}"       # (Optional) An escaped JSON string that contains the task settings. For a complete list of task settings, see Task Settings for AWS Database Migration Service Tasks (http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TaskSettings.html).
