@@ -82,7 +82,7 @@ resource "aws_dms_replication_instance" "repinstance" {
   preferred_maintenance_window = "${var.replication_instance_preferred_maintenance_window}" # (Optional) The weekly time range during which system maintenance can occur, in Universal Coordinated Time (UTC).
   publicly_accessible          = "${var.replication_instance_publicly_accessible}"          # (Optional, Default: false) Specifies the accessibility options for the replication instance. A value of true represents an instance with a public IP address. A value of false represents an instance with a private IP address.
   replication_instance_name    = "${var.replication_instance_name}"                         # (Optional) A list of VPC security group IDs to be used with the replication instance. The VPC security groups must work with the VPC containing the replication instance.
-  replication_subnet_group_id  = "${aws_dms_replication_subnet_group.subnet.id}"               # (Optional) A subnet group to associate with the replication instance.
+  replication_subnet_group_id  = "${aws_dms_replication_subnet_group.subnet.id}"            # (Optional) A subnet group to associate with the replication instance.
 
   tags {
     Name        = "${var.replication_instance_name}"
@@ -99,13 +99,13 @@ resource "aws_dms_replication_instance" "repinstance" {
 // Create a replication task to perform the migration
 resource "aws_dms_replication_task" "reptask" {
   count                    = "${var.enabled == "true" ? 1 : 0 }"
-  replication_instance_arn = "${aws_dms_replication_instance.test-dms-replication-instance-tf.replication_instance_arn}" # (Required) The Amazon Resource Name (ARN) of the replication instance.
-  replication_task_id      = "${var.replication_task_id}"                                                                # (Required) The replication task identifier.
+  replication_instance_arn = "${aws_dms_replication_instance.repinstance.replication_instance_arn}" # (Required) The Amazon Resource Name (ARN) of the replication instance.
+  replication_task_id      = "${var.replication_task_id}"                                           # (Required) The replication task identifier.
 
-  migration_type      = "${var.replication_task_migration_type}"                       # (Required) The migration type. Can be one of full-load | cdc | full-load-and-cdc.
-  table_mappings      = "${var.replication_task_table_mappings}"                       # (Required) An escaped JSON string that contains the table mappings. For information on table mapping see Using Table Mapping with an AWS Database Migration Service Task to Select and Filter Data (http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.html)
-  source_endpoint_arn = "${aws_dms_endpoint.test-dms-source-endpoint-tf.endpoint_arn}" # (Required) The Amazon Resource Name (ARN) string that uniquely identifies the source endpoint.
-  target_endpoint_arn = "${aws_dms_endpoint.test-dms-target-endpoint-tf.endpoint_arn}" # (Required) The Amazon Resource Name (ARN) string that uniquely identifies the target endpoint.
+  migration_type      = "${var.replication_task_migration_type}"           # (Required) The migration type. Can be one of full-load | cdc | full-load-and-cdc.
+  table_mappings      = "${var.replication_task_table_mappings}"           # (Required) An escaped JSON string that contains the table mappings. For information on table mapping see Using Table Mapping with an AWS Database Migration Service Task to Select and Filter Data (http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.html)
+  source_endpoint_arn = "${aws_dms_endpoint.source_endpoint.endpoint_arn}" # (Required) The Amazon Resource Name (ARN) string that uniquely identifies the source endpoint.
+  target_endpoint_arn = "${aws_dms_endpoint.target_endpoint.endpoint_arn}" # (Required) The Amazon Resource Name (ARN) string that uniquely identifies the target endpoint.
 
   cdc_start_time            = "${var.replication_task_cdc_start_time}" # (Optional) The Unix timestamp integer for the start of the Change Data Capture (CDC) operation.
   replication_task_settings = "${var.replication_task_settings}"       # (Optional) An escaped JSON string that contains the task settings. For a complete list of task settings, see Task Settings for AWS Database Migration Service Tasks (http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TaskSettings.html).
