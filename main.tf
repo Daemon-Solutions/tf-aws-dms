@@ -83,9 +83,10 @@ resource "aws_dms_replication_instance" "repinstance" {
   preferred_maintenance_window     = "${var.replication_instance_preferred_maintenance_window}" # (Optional) The weekly time range during which system maintenance can occur, in Universal Coordinated Time (UTC).
   publicly_accessible              = "${var.replication_instance_publicly_accessible}"          # (Optional, Default: false) Specifies the accessibility options for the replication instance. A value of true represents an instance with a public IP address. A value of false represents an instance with a private IP address.
   replication_instance_name        = "${var.replication_instance_name}"                         # (Optional) A list of VPC security group IDs to be used with the replication instance. The VPC security groups must work with the VPC containing the replication instance.
-  replication_instance_private_ips = "${var.replication_instance_private_ips}"                  # (Optional) A list of private IPs for the DMS instance.
-  replication_instance_public_ips  = "${var.replication_instance_public_ips}"                   # (Optional) A list of public IPs for the DMS instance.
-  replication_subnet_group_id      = "${aws_dms_replication_subnet_group.subnet.id}"            # (Optional) A subnet group to associate with the replication instance.
+  # below are ARN according to: https://www.terraform.io/docs/providers/aws/r/dms_replication_instance.html#attributes-reference
+  /* replication_instance_private_ips = "${var.replication_instance_private_ips}"                  # (Optional) A list of private IPs for the DMS instance. */
+  /* replication_instance_public_ips  = "${var.replication_instance_public_ips}"                   # (Optional) A list of public IPs for the DMS instance. */
+  /* replication_subnet_group_id      = "${aws_dms_replication_subnet_group.subnet.id}"            # (Optional) A subnet group to associate with the replication instance. */
 
   tags {
     Name        = "${var.replication_instance_name}"
