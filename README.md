@@ -1,9 +1,9 @@
 tf-aws-dms
 -----
 
-Data Migration Service (DMS) module.
+[AWS Data Migration Service](https://aws.amazon.com/dms/) (DMS) module.
 
-Creates a DMS source and target endpoints, a DMS replication instance and a DMS replication subnet.
+Creates source and target endpoints, a replication instance and a replication subnet.
 
 Usage
 -----
@@ -27,10 +27,6 @@ module "dms" {
   source_username = "db-user"
   source_password = "db-pass"
   source_database_name = "source-db-name"
-  source_certificate_arn = "source-arn-of-certificate"
-  source_extra_connection_attributes = "" // (Optional)
-  source_kms_key_arn = "source-arn-of-kms-key" // (Optional)
-  source_ssl_mode = "none" // (Optional, Default: none)
 
   // replication target endpoint options
   target_endpoint_id = "dms-target-endpoint-id"
@@ -40,11 +36,7 @@ module "dms" {
   target_port = "3306"
   target_username = "db-user"
   target_password = "db-pass"
-  target_certificate_arn = "target-arn-of-certificate" // (Optional, Default: empty string)
-  target_database_name = "target-db-name" // (Optional)
-  target_extra_connection_attributes = "" // (Optional) 
-  target_kms_key_arn = "target-arn-of-kms-key" // (Optional)
-  target_ssl_mode = "none" // (Optional, Default: none)
+  target_database_name = "target-db-name"
 
   // replication subnet group options
   replication_subnet_group_description = "The replication subnet group"
@@ -52,28 +44,21 @@ module "dms" {
   replication_subnet_subnet_ids = ["subnet-12345678", "subnet-23456781"]
 
   // replication instance options
-  replication_instance_class = "dms.t2.micro"
   replication_instance_id = "dms-replication-instance"
   replication_instance_name = "dms-replication-instance"
-  replication_instance_allocated_storage = 20
-  replication_instance_apply_immediately = true
-  replication_instance_auto_minor_version_upgrade = true
   replication_instance_availability_zone = "eu-west-1a"
   replication_instance_engine_version = "1.9.0"
   replication_instance_kms_key_arn = "arn-of-instance-kms-key"
-  replication_instance_multi_az = false
   replication_instance_preferred_maintenance_window = "sun:03:45-sun:05:45"
-  replication_instance_publicly_accessible = false
 
   // replication task options
   replication_task_id = "dms-replication-task"
   replication_task_name = "dms-replication-task"
   replication_task_migration_type = "full-load-and-cdc"
-  replication_task_table_mappings = ""
-  replication_task_settings = "..."
   replication_task_cdc_start_time = 1484346880
 }
 ```
+
 
 Variables
 ---------
@@ -128,7 +113,7 @@ _Variables marked with **[*]** are mandatory._
  - `replication_instance_availability_zone` - The EC2 Availability Zone that the replication instance will be created in. [Default: _blank_]
  - `replication_instance_engine_version` - The engine version number of the replication instance. [Default: _blank_]
  - `replication_instance_kms_key_arn` - The Amazon Resource Name (ARN) for the KMS key that will be used to encrypt the replication connection parameters. If you do not specify a value for `replication_instance_kms_key_arn`, then AWS DMS will use your default encryption key. AWS KMS creates the default encryption key for your AWS account. Your AWS account has a different default encryption key for each AWS region. [Default: _blank_]
- - `replication_instance_multi_az` - Specifies if the replication instance is a multi-az deployment. You cannot set the `availability_zone` variable if the `multi_az` variable is set to `true`. [Default: _blank_]
+ - `replication_instance_multi_az` - Specifies if the replication instance is a multi-az deployment. You cannot set the `availability_zone` variable if the `multi_az` variable is set to `true`. [Default: `false`]
  - `replication_instance_preferred_maintenance_window` - The weekly time range during which repliation instance system maintenance can occur, in Universal Coordinated Time (UTC). [Default: `sun:03:45-sun:05:45`]
  - `replication_instance_publicly_accessible` - Specifies the accessibility options for the replication instance. A value of `true` represents an instance with a public IP address. A value of `false` represents an instance with a private IP address. [Default: `false`]
  
@@ -139,8 +124,7 @@ _Variables marked with **[*]** are mandatory._
  - `replication_task_table_mappings` - An escaped JSON string that contains the table mappings. For information on table mapping see the [AWS User Docs](http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.html). [Default: _blank_]
  - `replication_task_settings` - An escaped JSON string that contains the task settings. For a complete list of task settings, see the [AWS User Docs](http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TaskSettings.html). [Default: _blank_]
  - `replication_task_cdc_start_time` - The Unix timestamp integer for the start of the Change Data Capture (CDC) operation. [Default: _blank_]
- 
-<br />
+
 
 Outputs
 -------
