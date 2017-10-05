@@ -1,8 +1,3 @@
-// Not tested on any versions below 0.9.0
-terraform {
-  required_version = ">= 0.9.0"
-}
-
 // http://docs.aws.amazon.com/dms/latest/userguide/CHAP_GettingStarted.html
 // Create the source Data Migration Service Endpoint (source database)
 resource "aws_dms_endpoint" "source_endpoint" {
