@@ -97,7 +97,7 @@ _Variables marked with **[*]** are mandatory._
  - `source_certificate_arn` - The Amazon Resource Name (ARN) for the TLS certificate on the source endpoint. [Default: _blank_]
  - `source_extra_connection_attributes` - Additional attributes associated with the source connection. For available attributes see the [AWS User Docs](http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ConnectionAttributes.html). [Default: _blank_]
  - `source_kms_key_arn` - The Amazon Resource Name (ARN) for the KMS key that will be used to encrypt the source connection parameters. If you do not specify a value for `source_kms_key_arn`, then AWS DMS will use your default encryption key. AWS KMS creates the default encryption key for your AWS account. Your AWS account has a different default encryption key for each AWS region. [Default: _blank_]
- - `source_ssl_mode` - The SSL mode to use for the source connection. Can be one of the following options: `none` | `require` | `verify-ca` | `verify-full`. [Default: _blank_]
+ - `source_ssl_mode` - The SSL mode to use for the source connection. Can be one of the following options: `none` | `require` | `verify-ca` | `verify-full`. [Default: `none`]
  
 ###### Replication target endpoint options
  - `target_endpoint_id` - The target database endpoint identifier. **[*]**
@@ -111,7 +111,7 @@ _Variables marked with **[*]** are mandatory._
  - `target_database_name` - The name of the target database. [Default: _blank_]
  - `target_extra_connection_attributes` - Additional attributes associated with the target connection. For available attributes see the [AWS User Docs](http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ConnectionAttributes.html). [Default: _blank_]
  - `target_kms_key_arn` - The Amazon Resource Name (ARN) for the KMS key that will be used to encrypt the connection parameters. If you do not specify a value for `target_kms_key_arn`, then AWS DMS will use your default encryption key. AWS KMS creates the default encryption key for your AWS account. Your AWS account has a different default encryption key for each AWS region. [Default: _blank_]
- - `target_ssl_mode` - The SSL mode to use for the target connection. Can be one of the following options: `none` | `require` | `verify-ca` | `verify-full`. [Default: _blank_]
+ - `target_ssl_mode` - The SSL mode to use for the target connection. Can be one of the following options: `none` | `require` | `verify-ca` | `verify-full`. [Default: `none`]
 
 ###### Replication subnet group options
  - `replication_subnet_group_description` - The description for the replication subnet group. **[*]**
@@ -119,24 +119,24 @@ _Variables marked with **[*]** are mandatory._
  - `replication_subnet_subnet_ids` - A list of the EC2 subnet IDs for the replication subnet group. **[*]**
  
 ###### Replication instance options
- - `replication_instance_class` - The instance class to use for the replication instance. For more information on the instance types available please see the [AWS User Docs](http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ReplicationInstance.html). **[*]**
+ - `replication_instance_class` - The instance class to use for the replication instance. For more information on the instance types available please see the [AWS User Docs](http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.ReplicationInstance.html). [Default: `dms.t2.micro`]
  - `replication_instance_id` - The replication instance ID. For more information on this variable please see the [Terraform User Docs](https://www.terraform.io/docs/providers/aws/r/dms_replication_instance.html#replication_instance_id). **[*]**
  - `replication_instance_name` - The value to set in the replication instance's `Name` tag. **[*]**
- - `replication_instance_allocated_storage` - The amount of storage to allocate to the replication instance. [Default: _blank_]
- - `replication_instance_apply_immediately` - Indicates whether changes to the replication instance should be applied immediately or during the next maintenance window. [Default: _blank_]
- - `replication_instance_auto_minor_version_upgrade` - Indicates that minor engine upgrades will be applied automatically to the replication instance during the maintenance window. [Default: _blank_]
+ - `replication_instance_allocated_storage` - The amount of storage to allocate to the replication instance (GB). [Default: `20`]
+ - `replication_instance_apply_immediately` - Indicates whether changes to the replication instance should be applied immediately or during the next maintenance window. [Default: `false`]
+ - `replication_instance_auto_minor_version_upgrade` - Indicates that minor engine upgrades will be applied automatically to the replication instance during the maintenance window. [Default: `true`]
  - `replication_instance_availability_zone` - The EC2 Availability Zone that the replication instance will be created in. [Default: _blank_]
- - `replication_instance_engine_version` - The engine version number of the replication instance. [Default: _blank_] ## CHECK
+ - `replication_instance_engine_version` - The engine version number of the replication instance. [Default: _blank_]
  - `replication_instance_kms_key_arn` - The Amazon Resource Name (ARN) for the KMS key that will be used to encrypt the replication connection parameters. If you do not specify a value for `replication_instance_kms_key_arn`, then AWS DMS will use your default encryption key. AWS KMS creates the default encryption key for your AWS account. Your AWS account has a different default encryption key for each AWS region. [Default: _blank_]
  - `replication_instance_multi_az` - Specifies if the replication instance is a multi-az deployment. You cannot set the `availability_zone` variable if the `multi_az` variable is set to `true`. [Default: _blank_]
  - `replication_instance_preferred_maintenance_window` - The weekly time range during which repliation instance system maintenance can occur, in Universal Coordinated Time (UTC). [Default: `sun:03:45-sun:05:45`]
- - `replication_instance_publicly_accessible` - Specifies the accessibility options for the replication instance. A value of `true` represents an instance with a public IP address. A value of `false` represents an instance with a private IP address. [Default: _blank_]
+ - `replication_instance_publicly_accessible` - Specifies the accessibility options for the replication instance. A value of `true` represents an instance with a public IP address. A value of `false` represents an instance with a private IP address. [Default: `false`]
  
 ###### Replication task options
  - `replication_task_id` - The replication task identifier. For further information on this variable please see the [Terraform User Docs](https://www.terraform.io/docs/providers/aws/r/dms_replication_task.html#replication_task_id). **[*]**
  - `replication_task_name` - The value to set in the replication task's `Name` tag. **[*]**
  - `replication_task_migration_type` - The migration type, select from one of the following options: `full-load` | `cdc` | `full-load-and-cdc`. **[*]**
- - `replication_task_table_mappings` - An escaped JSON string that contains the table mappings. For information on table mapping see the [AWS User Docs](http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.html). **[*]**
+ - `replication_task_table_mappings` - An escaped JSON string that contains the table mappings. For information on table mapping see the [AWS User Docs](http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TableMapping.html). [Default: _blank_]
  - `replication_task_settings` - An escaped JSON string that contains the task settings. For a complete list of task settings, see the [AWS User Docs](http://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.CustomizingTasks.TaskSettings.html). [Default: _blank_]
  - `replication_task_cdc_start_time` - The Unix timestamp integer for the start of the Change Data Capture (CDC) operation. [Default: _blank_]
  

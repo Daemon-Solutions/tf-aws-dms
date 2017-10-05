@@ -84,7 +84,7 @@ variable "source_kms_key_arn" {
 variable "source_ssl_mode" {
   description = "The SSL mode to use for the connection."
   type = "string"
-  default = ""
+  default = "none"
 }
 
 // Target Endpoint Variables
@@ -151,7 +151,7 @@ variable "target_kms_key_arn" {
 variable "target_ssl_mode" {
   description = "The SSL mode to use for the target connection."
   type = "string"
-  default = ""
+  default = "none"
 }
 
 // Replication subnet variables
@@ -174,6 +174,7 @@ variable "replication_subnet_subnet_ids" {
 variable "replication_instance_class" {
   description = "The instance class to use for the replication instance."
   type = "string"
+  default = "dms.t2.micro"
 }
 
 variable "replication_instance_id" {
@@ -189,19 +190,19 @@ variable "replication_instance_name" {
 variable "replication_instance_allocated_storage" {
   description = "The amount of storage to allocate to the replication instance (GB)."
   type = "string"
-  default = ""
+  default = 20
 }
 
 variable "replication_instance_apply_immediately" {
   description = "Indicates whether the changes should be applied immediately or during the next maintenance window."
   type = "string"
-  default = ""
+  default = false
 }
 
 variable "replication_instance_auto_minor_version_upgrade" {
   description = "Indicates that minor engine upgrades will be applied automatically to the replication instance during the maintenance window."
   type = "string"
-  default = ""
+  default = true
 }
 
 variable "replication_instance_availability_zone" {
@@ -225,7 +226,7 @@ variable "replication_instance_kms_key_arn" {
 variable "replication_instance_multi_az" {
   description = "Specifies if the replication instance is a multi-az deployment."
   type = "string"
-  default = ""
+  default = false
 }
 
 variable "replication_instance_preferred_maintenance_window" {
@@ -237,7 +238,7 @@ variable "replication_instance_preferred_maintenance_window" {
 variable "replication_instance_publicly_accessible" {
   description = "Specifies the accessibility options for the replication instance."
   type = "string"
-  default = ""
+  default = false
 }
 
 // Replication task variables
